@@ -1,47 +1,34 @@
 output "vpc_id" {
-  description = "ID of the VPC"
+  description = "The ID of the VPC"
   value       = aws_vpc.this.id
 }
 
-output "vpc_cidr" {
-  description = "CIDR block of the VPC"
-  value       = aws_vpc.this.cidr_block
-}
-
-
 output "public_subnet_ids" {
-  description = "List of public subnet IDs"
+  description = "List of IDs of public subnets"
   value       = aws_subnet.public[*].id
 }
 
 output "private_subnet_ids" {
-  description = "List of private subnet IDs"
+  description = "List of IDs of private subnets"
   value       = aws_subnet.private[*].id
 }
 
-output "internet_gateway_id" {
-  description = "ID of the Internet Gateway"
-  value       = var.create_igw && var.create_public_subnets ? aws_internet_gateway.this[0].id : null
-}
-
-output "nat_gateway_ids" {
-  description = "List of NAT Gateway IDs"
-  value       = aws_nat_gateway.this[*].id
-}
-
-
-output "public_route_table_id" {
-  description = "ID of the public route table"
-  value       = var.create_public_subnets ? aws_route_table.public[0].id : null
+output "public_route_table_ids" {
+  description = "List of IDs of public route tables"
+  value       = aws_route_table.public[*].id
 }
 
 output "private_route_table_ids" {
-  description = "List of private route table IDs"
+  description = "List of IDs of private route tables"
   value       = aws_route_table.private[*].id
 }
 
+output "nat_gateway_ids" {
+  description = "List of IDs of NAT Gateways"
+  value       = aws_nat_gateway.this[*].id
+}
 
-output "availability_zones" {
-  description = "List of availability zones used"
-  value       = local.azs
+output "vpc_flow_log_id" {
+  description = "The ID of the Flow Log"
+  value       = try(aws_flow_log.this[0].id, null)
 }

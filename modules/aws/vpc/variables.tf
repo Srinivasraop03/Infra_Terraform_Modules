@@ -1,63 +1,86 @@
+variable "vpc_cidr" {
+  description = "CIDR block for the VPC"
+  type        = string
+}
+
 variable "vpc_name" {
   description = "Name of the VPC"
   type        = string
 }
 
 variable "environment" {
-  description = "Environment name(dev/staging/prod)"
+  description = "Environment name (dev, prod, etc.)"
   type        = string
-}
-
-variable "vpc_cidr" {
-  description = "CIDR block for the VPC"
-  type        = string
-  default     = "10.0.0.0/16"
-}
-
-variable "enable_dns_hostnames" {
-  description = "Enable DNS hostnames for the VPC"
-  type        = bool
-  default     = true
-}
-
-variable "enable_dns_support" {
-  description = "Enable DNS support for the VPC"
-  type        = bool
-  default     = true
-}
-
-variable "availability_zones" {
-  description = "List of availability zones"
-  type        = list(string)
-  default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
 }
 
 variable "azs_count" {
-  description = "Number of availability zones"
+  description = "Number of availability zones to use"
   type        = number
   default     = 2
 }
 
-variable "create_public_subnets" {
-  description = "Create public subnets"
-  type        = bool
-  default     = true
+variable "availability_zones" {
+  description = "List of availability zones to use. If empty, will pick first azs_count"
+  type        = list(string)
+  default     = []
 }
 
 variable "public_subnet_cidrs" {
-  description = "List of public subnet CIDRs"
+  description = "CIDR blocks for public subnets"
+  type        = list(string)
+  default     = []
+}
+
+variable "private_subnet_cidrs" {
+  description = "CIDR blocks for private subnets"
   type        = list(string)
   default     = []
 }
 
 variable "public_subnet_suffix" {
-  description = "Suffix for public subnet names"
+  description = "Suffix for public subnets"
   type        = string
   default     = "public"
 }
 
-variable "map_public_ip_on_launch" {
-  description = "Auto-assign public IPs in public subnets"
+variable "private_subnet_suffix" {
+  description = "Suffix for private subnets"
+  type        = string
+  default     = "private"
+}
+
+variable "enable_dns_hostnames" {
+  description = "Enable DNS hostnames in the VPC"
+  type        = bool
+  default     = true
+}
+
+variable "enable_dns_support" {
+  description = "Enable DNS support in the VPC"
+  type        = bool
+  default     = true
+}
+
+variable "enable_nat_gateway" {
+  description = "Enable NAT gateway for private subnets"
+  type        = bool
+  default     = true
+}
+
+variable "single_nat_gateway" {
+  description = "Use a single NAT gateway for all private subnets"
+  type        = bool
+  default     = true
+}
+
+variable "create_igw" {
+  description = "Create Internet Gateway"
+  type        = bool
+  default     = true
+}
+
+variable "create_public_subnets" {
+  description = "Create public subnets"
   type        = bool
   default     = true
 }
@@ -68,68 +91,52 @@ variable "create_private_subnets" {
   default     = true
 }
 
-variable "private_subnet_cidrs" {
-  description = "CIDR blocks for private subnets"
-  type        = list(string)
-  default     = []
-}
-
-variable "private_subnet_suffix" {
-  description = "Suffix for private subnet names"
-  type        = string
-  default     = "private"
-}
-
-variable "enable_nat_gateway" {
-  description = "Enable NAT gateway for private subnets"
-  type        = bool
-  default     = false
-}
-
-variable "single_nat_gateway" {
-  description = "Use a single NAT gateway for all private subnets"
+variable "map_public_ip_on_launch" {
+  description = "Map public IP on launch for public subnets"
   type        = bool
   default     = true
-}
-
-variable "one_nat_gateway_per_az" {
-  description = "Create one NAT gateway per availability zone"
-  type        = bool
-  default     = false
-}
-
-variable "create_igw" {
-  description = "Create internet gateway"
-  type        = bool
-  default     = true
-}
-
-variable "enable_flow_logs" {
-  description = "Enable flow logs"
-  type        = bool
-  default     = false
-}
-
-variable "flow_log_destination" {
-  description = "Destination for flow logs (e.g., CloudWatch Logs, S3)"
-  type        = string
-  default     = "cloudwatch"
-}
-
-variable "tags" {
-  description = "Tags to apply to all VPC resources"
-  type        = map(string)
-  default     = {}
 }
 
 variable "enable_s3_endpoint" {
-  description = "Create VPC endpoint for S3 (saves NAT costs)"
+  description = "Enable S3 VPC Endpoint"
   type        = bool
   default     = false
 }
 
 variable "enable_dynamodb_endpoint" {
-  description = "Create VPC endpoint for DynamoDB (saves NAT costs)"
+  description = "Enable DynamoDB VPC Endpoint"
   type        = bool
   default     = false
+}
+
+variable "tags" {
+  description = "Tags to apply to resources"
+  type        = map(string)
+  default     = {}
+}
+
+# --- VPC Flow Logs Configuration ---
+
+variable "enable_flow_log" {
+  description = "Whether to enable VPC Flow Logs"
+  type        = bool
+  default     = false
+}
+
+variable "flow_log_destination_arn" {
+  description = "ARN of the CloudWatch Log Group or S3 Bucket for Flow Logs"
+  type        = string
+  default     = null
+}
+
+variable "flow_log_traffic_type" {
+  description = "The type of traffic to capture (ACCEPT, REJECT, ALL)"
+  type        = string
+  default     = "ALL"
+}
+
+variable "flow_log_max_aggregation_interval" {
+  description = "The maximum interval of time during which a flow of packets is captured and aggregated into a flow log record"
+  type        = number
+  default     = 600
 }

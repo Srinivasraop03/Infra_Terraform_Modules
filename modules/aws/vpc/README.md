@@ -79,7 +79,7 @@ module "prod_vpc" {
   enable_dynamodb_endpoint = true
   
   # Security monitoring
-  enable_flow_logs = true
+  enable_flow_log = true
   
   tags = {
     Project    = "MyApp"
@@ -112,7 +112,7 @@ module "dev_vpc" {
   single_nat_gateway = true  # Just one for all subnets
   
   # Save costs
-  enable_flow_logs = false
+  enable_flow_log = false
   
   tags = {
     Project = "MyApp"
@@ -219,7 +219,7 @@ No internet needed: enable_nat_gateway = false (free)
 
 | Variable | Default | What It Does |
 |----------|---------|--------------|
-| `enable_flow_logs` | `false` | Log all network traffic? |
+| `enable_flow_log` | `false` | Log all network traffic? |
 | `flow_log_destination` | `"cloudwatch"` | Where to send logs |
 
 **Use when:** Security compliance required, debugging network issues
@@ -269,7 +269,7 @@ resource "aws_lb" "app" {
 | Internet Gateway | FREE | No |
 | Route tables | FREE | No |
 | VPC Endpoints (S3/DynamoDB) | FREE | No (actually saves money!) |
-| Flow Logs storage | ~$0.50/GB | Set `enable_flow_logs = false` |
+| Flow Logs storage | ~$0.50/GB | Set `enable_flow_log = false` |
 
 **Example monthly costs:**
 - **Dev (1 NAT):** $32
