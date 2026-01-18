@@ -65,3 +65,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "authentication_mode" {
+  description = "Authentication mode for the cluster. Valid values are: CONFIG_MAP, API, API_AND_CONFIG_MAP"
+  type        = string
+  default     = "API_AND_CONFIG_MAP"
+}

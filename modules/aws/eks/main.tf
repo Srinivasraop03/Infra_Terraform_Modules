@@ -15,6 +15,11 @@ resource "aws_eks_cluster" "this" {
     security_group_ids      = var.cluster_security_group_ids
   }
 
+  access_config {
+    authentication_mode                         = var.authentication_mode
+    bootstrap_cluster_creator_admin_permissions = true
+  }
+
   encryption_config {
     provider {
       key_arn = var.kms_key_arn
